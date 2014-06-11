@@ -17,6 +17,7 @@ SearchAreaView = Backbone.View.extend({
     if ($event.keyCode === 13) {
       $event.preventDefault();
       query = this.$('input').val();
+      $($event.target).blur();
       return vent.trigger('!search:term', {
         query: query
       });
