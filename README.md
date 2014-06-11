@@ -3,14 +3,19 @@ Dependencies
 * git
 * npm and node
 
+Requirements
+---
+* Marvel developer account key [https://developer.marvel.com/account]
+* Add your domain to your Marvel developer account's accepted referrer's list
+
 Local Dev
 ---
+Add your Marvel developer account key [https://developer.marvel.com/account]
+`cp app/config.example.coffee app/config.coffee`
+edit `app/config.coffee` and add your own Marvel `apiKey`
+
 Install npm and bower packages:
 `make install`
-
-Add your Marvel developer account key [https://developer.marvel.com/account]
-copy `app/config.example.coffee` to `app/config.coffee`
-edit `app/config.coffee` and add your own Marvel `apiKey`
 
 Start the local development server:
 `make live`
@@ -20,11 +25,16 @@ Run the tests in the browser:
 
 Run it with Docker
 ---
+`cp app/config.example.coffee app/config.coffee`
+edit `app/config.coffee` and add your own Marvel `apiKey`
+
 Build a container:
-`sudo docker build -t <your username>/marvelSearch .`
+`sudo docker build -t marvelSearch .`
 
 Run the container:
-`sudo docker run -d -p 8080:8080 <your username>/marvelSearch`
+`sudo docker run -d -p 8080:8080 marvelSearch`
+
+Visit the app:
 `open http://localhost:8080/`
 
 Stop the container:

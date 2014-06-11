@@ -9,11 +9,15 @@ MediaTabsView = Backbone.View.extend
     vent.on '!characters:searchCount', @onCharactersSearchCount, this
     vent.on '!comics:searchCount', @onComicsSearchCount, this
     vent.on '!creators:searchCount', @onCreatorsSearchCount, this
+    vent.on '!search:term', @onSearchTerm, this
 
   render: ->
     @$el.html @template {}
 
     this
+
+  onSearchTerm: ->
+    @$('.badge').html ''
 
   onCharactersSearchCount: (data) ->
     @$('a[href="#characters"] .badge').html formatNumber data.count

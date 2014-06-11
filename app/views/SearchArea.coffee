@@ -1,3 +1,5 @@
+vent = require 'vent'
+
 SearchAreaView = Backbone.View.extend
   el: '.search-area'
 
@@ -15,6 +17,8 @@ SearchAreaView = Backbone.View.extend
     if $event.keyCode is 13
       $event.preventDefault()
 
-      @$('input').val ''
+      query = @$('input').val()
+
+      vent.trigger '!search:term', {query}
 
 module.exports = SearchAreaView

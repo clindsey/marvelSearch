@@ -8,12 +8,24 @@ CreatorCollection = Backbone.Collection.extend
   page: 0
   itemsPerPage: config.itemsPerPage
   totalCount: 0
+  query: ''
+
+  initialize: ->
+    vent.on '!search:term', @onSearchTerm, this
+
+  onSearchTerm: (data) ->
+    @query = data.query
+    @page = 0
+    @fetch()
 
   url: ->
     limit = @itemsPerPage
     offset = Math.max 0, @page * limit
 
-    "#{config.apiBaseUri}/creators?apikey=#{config.apiKey}&limit=#{limit}&offset=#{offset}"
+    urlString = "#{config.apiBaseUri}/creators?apikey=#{config.apiKey}&limit=#{limit}&offset=#{offset}"
+    urlString = "#{urlString}&nameStartsWith=#{@query}" if @query
+
+    urlString
 
   parse: (response) ->
     count = response.data.total
