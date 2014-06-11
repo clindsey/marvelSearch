@@ -3,11 +3,14 @@
   <h4 class="modal-title">{{name}}</h4>
 </div>
 <div class="modal-body">
-  {{#if description}}
-    {{{ description }}}
-  {{else}}
-    Description unavailable.
-  {{/if}}
+  <p>
+    {{#if description}}
+      {{{ description }}}
+    {{else}}
+      Description unavailable.
+    {{/if}}
+  </p>
+  {{{buildLinks urls}}}
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

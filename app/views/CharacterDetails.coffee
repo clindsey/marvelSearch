@@ -1,4 +1,5 @@
 vent = require 'vent'
+require 'helpers/characterDetails'
 
 CharacterDetailsView = Backbone.View.extend
   el: '.media-details'
