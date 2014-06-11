@@ -305,7 +305,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<ul class=\"nav nav-tabs\">\n  <li class=\"active\"><a href=\"#characters\" data-toggle=\"tab\">Characters <span class=\"badge\"></span></a></li>\n  <li><a href=\"#comics\" data-toggle=\"tab\">Comics <span class=\"badge\"></span></a></li>\n  <li><a href=\"#creators\" data-toggle=\"tab\">Creators <span class=\"badge\"></span></a></li>\n</ul>\n\n<div class=\"tab-content\">\n  <div class=\"tab-pane active\" id=\"characters\">\n    <div class=\"characters-list media-list\">\n    </div>\n  </div>\n  <div class=\"tab-pane\" id=\"comics\">\n    <div class=\"comics-list media-list\">\n    </div>\n  </div>\n  <div class=\"tab-pane\" id=\"creators\">\n    <div class=\"creators-list media-list\">\n    </div>\n  </div>\n</div>\n";
+  return "<ul class=\"nav nav-pills\">\n  <li class=\"active\"><a href=\"#characters\" data-toggle=\"tab\">Characters <span class=\"badge\"></span></a></li>\n  <li><a href=\"#comics\" data-toggle=\"tab\">Comics <span class=\"badge\"></span></a></li>\n  <li><a href=\"#creators\" data-toggle=\"tab\">Creators <span class=\"badge\"></span></a></li>\n</ul>\n\n<div class=\"tab-content\">\n  <div class=\"tab-pane active\" id=\"characters\">\n    <div class=\"characters-list media-list\">\n    </div>\n  </div>\n  <div class=\"tab-pane\" id=\"comics\">\n    <div class=\"comics-list media-list\">\n    </div>\n  </div>\n  <div class=\"tab-pane\" id=\"creators\">\n    <div class=\"creators-list media-list\">\n    </div>\n  </div>\n</div>\n";
   });
 
 this["JST"]["app/templates/searchArea.hbs"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
