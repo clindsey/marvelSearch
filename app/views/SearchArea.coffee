@@ -19,6 +19,8 @@ SearchAreaView = Backbone.View.extend
 
       query = @$('input').val()
 
+      $($event.target).blur()
+
       vent.trigger '!search:term', {query}
 
 module.exports = SearchAreaView
