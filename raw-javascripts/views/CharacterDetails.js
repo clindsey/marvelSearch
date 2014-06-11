@@ -2,6 +2,8 @@ var CharacterDetailsView, vent;
 
 vent = require('vent');
 
+require('helpers/characterDetails');
+
 CharacterDetailsView = Backbone.View.extend({
   el: '.media-details',
   template: require('templates')(Handlebars)['app/templates/characterDetails.hbs'],

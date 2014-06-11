@@ -5,31 +5,34 @@ this["JST"] = this["JST"] || {};
 this["JST"]["app/templates/characterDetails.hbs"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression, self=this;
+  var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
   var buffer = "", stack1, helper;
-  buffer += "\n    ";
+  buffer += "\n      ";
   if (helper = helpers.description) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.description); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n  ";
+  buffer += "\n    ";
   return buffer;
   }
 
 function program3(depth0,data) {
   
   
-  return "\n    Description unavailable.\n  ";
+  return "\n      Description unavailable.\n    ";
   }
 
   buffer += "<div class=\"modal-header\">\n  <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n  <h4 class=\"modal-title\">";
   if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "</h4>\n</div>\n<div class=\"modal-body\">\n  ";
+    + "</h4>\n</div>\n<div class=\"modal-body\">\n  <p>\n    ";
   stack1 = helpers['if'].call(depth0, (depth0 && depth0.description), {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n  </p>\n  ";
+  stack1 = (helper = helpers.buildLinks || (depth0 && depth0.buildLinks),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.urls), options) : helperMissing.call(depth0, "buildLinks", (depth0 && depth0.urls), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n</div>\n<div class=\"modal-footer\">\n  <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n</div>\n";
   return buffer;

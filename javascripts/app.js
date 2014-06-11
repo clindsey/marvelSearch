@@ -160,6 +160,24 @@ module.exports = config;
 
 });
 
+window.require.register('helpers/characterDetails', function(require, module) {
+
+Handlebars.registerHelper('buildLinks', function(urls) {
+  var $aEl, $liEl, $ulEl, url, _i, _len;
+  $ulEl = $('<ul>');
+  for (_i = 0, _len = urls.length; _i < _len; _i++) {
+    url = urls[_i];
+    $liEl = $('<li>');
+    $aEl = $("<a href='" + url.url + "'>");
+    $aEl.html(url.type);
+    $liEl.append($aEl);
+    $ulEl.append($liEl);
+  }
+  return $ulEl[0].outerHTML;
+});
+
+});
+
 window.require.register('helpers/charactersList', function(require, module) {
 
 Handlebars.registerHelper('thumbnailSrc', function(thumbnail) {
@@ -346,6 +364,8 @@ window.require.register('views/CharacterDetails', function(require, module) {
 var CharacterDetailsView, vent;
 
 vent = require('vent');
+
+require('helpers/characterDetails');
 
 CharacterDetailsView = Backbone.View.extend({
   el: '.media-details',
