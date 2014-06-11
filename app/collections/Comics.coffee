@@ -1,22 +1,10 @@
+MediaCollection = require 'collections/Media'
 ComicModel = require 'models/Comic'
 config = require 'config'
 vent = require 'vent'
 
-ComicCollection = Backbone.Collection.extend
+ComicCollection = MediaCollection.extend
   model: ComicModel
-
-  page: 0
-  itemsPerPage: config.itemsPerPage
-  totalCount: 0
-  query: ''
-
-  initialize: ->
-    vent.on '!search:term', @onSearchTerm, this
-
-  onSearchTerm: (data) ->
-    @query = data.query
-    @page = 0
-    @fetch()
 
   url: ->
     limit = @itemsPerPage
@@ -28,11 +16,8 @@ ComicCollection = Backbone.Collection.extend
     urlString
 
   parse: (response) ->
-    count = response.data.total
-    @totalCount = count
+    vent.trigger '!comics:searchCount', {count: response.data.total}
 
-    vent.trigger '!comics:searchCount', {count}
-
-    response.data.results
+    MediaCollection.prototype.parse.call this, response
 
 module.exports = new ComicCollection

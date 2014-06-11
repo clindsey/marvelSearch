@@ -28,6 +28,8 @@ Handlebars.registerHelper 'buildPagination', (collection) ->
   startIndex = Math.max collection.page - 3, 0
   endIndex = Math.min startIndex + 6, Math.max(0, pagesCount - 1)
 
+  return '' if endIndex - startIndex is 0
+
   for pageIndex in [startIndex..endIndex]
     $liEl = buildPaginationItem pageIndex + 1, 'page-number', pageIndex is collection.page, 'active'
     $outEl.append $liEl

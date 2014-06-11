@@ -1,22 +1,10 @@
+MediaCollection = require 'collections/Media'
 CharacterModel = require 'models/Character'
 config = require 'config'
 vent = require 'vent'
 
-CharacterCollection = Backbone.Collection.extend
+CharacterCollection = MediaCollection.extend
   model: CharacterModel
-
-  page: 0
-  itemsPerPage: config.itemsPerPage
-  totalCount: 0
-  query: ''
-
-  initialize: ->
-    vent.on '!search:term', @onSearchTerm, this
-
-  onSearchTerm: (data) ->
-    @query = data.query
-    @page = 0
-    @fetch()
 
   url: ->
     limit = @itemsPerPage
@@ -28,11 +16,8 @@ CharacterCollection = Backbone.Collection.extend
     urlString
 
   parse: (response) ->
-    count = response.data.total
-    @totalCount = count
+    vent.trigger '!characters:searchCount', {count: response.data.total}
 
-    vent.trigger '!characters:searchCount', {count}
-
-    response.data.results
+    MediaCollection.prototype.parse.call this, response
 
 module.exports = new CharacterCollection

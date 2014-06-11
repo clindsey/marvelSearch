@@ -1,9 +1,8 @@
 AppRouter = Backbone.Router.extend
   routes:
-    'comics': 'listComics'
     '*actions': 'defaultRoute'
 
-  listComics: ->
+  defaultRoute: (actions) ->
     comicsCollection = require 'collections/Comics'
     creatorsCollection = require 'collections/Creators'
     charactersCollection = require 'collections/Characters'
@@ -29,8 +28,5 @@ AppRouter = Backbone.Router.extend
     charactersListView = new (require 'views/CharactersList') collection: charactersCollection
     charactersListView.render()
     charactersCollection.fetch()
-
-  defaultRoute: (actions) ->
-    @listComics()
 
 module.exports = new AppRouter
