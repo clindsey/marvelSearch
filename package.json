@@ -1,5 +1,5 @@
 {
-  "name": "clindsey-marvelSearch"
+  "name": "marvelSearch"
 , "private": true
 , "version": "0.0.1"
 , "description": "Uses Marvel's public API to search through comics."

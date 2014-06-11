@@ -1,5 +1,5 @@
 tests = [
-  'test/unit/views/comicsList'
+  #'test/unit/views/comicsList'
 ]
 
 for test in tests

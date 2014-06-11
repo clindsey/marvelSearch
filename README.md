@@ -1,12 +1,12 @@
-Dependencies
----
-* git
-* npm and node
-
 Requirements
 ---
 * Marvel developer account key [https://developer.marvel.com/account]
 * Add your domain to your Marvel developer account's accepted referrer's list
+
+Dependencies
+---
+* git
+* npm and node
 
 Local Dev
 ---
@@ -40,3 +40,7 @@ Visit the app:
 Stop the container:
 `sudo docker ps` (find the Container ID)
 `sudo docker stop <first few characters of Container ID>`
+
+Testing
+---
+Work in progress, will be adding actual unit tests soon. Will have coverage testings also.

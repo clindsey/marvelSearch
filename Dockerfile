@@ -1,4 +1,4 @@
-# clindsey/marvelSearch
+# marvelSearch
 #
 # VERSION 0.0.1
 #
