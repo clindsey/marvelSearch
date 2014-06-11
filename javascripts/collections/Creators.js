@@ -1,4 +1,6 @@
-window.require.register("collections/Creators", function(require, module) {var CreatorCollection, CreatorModel, config, vent;
+window.require.register("collections/Creators", function(require, module) {var CreatorCollection, CreatorModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 CreatorModel = require('models/Creator');
 
@@ -6,20 +8,8 @@ config = require('config');
 
 vent = require('vent');
 
-CreatorCollection = Backbone.Collection.extend({
+CreatorCollection = MediaCollection.extend({
   model: CreatorModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -31,13 +21,10 @@ CreatorCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!creators:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 

@@ -1,5 +1,7 @@
 window.require.register('collections/Characters', function(require, module) {
-var CharacterCollection, CharacterModel, config, vent;
+var CharacterCollection, CharacterModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 CharacterModel = require('models/Character');
 
@@ -7,20 +9,8 @@ config = require('config');
 
 vent = require('vent');
 
-CharacterCollection = Backbone.Collection.extend({
+CharacterCollection = MediaCollection.extend({
   model: CharacterModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -32,13 +22,10 @@ CharacterCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!characters:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 
@@ -47,7 +34,9 @@ module.exports = new CharacterCollection;
 });
 
 window.require.register('collections/Comics', function(require, module) {
-var ComicCollection, ComicModel, config, vent;
+var ComicCollection, ComicModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 ComicModel = require('models/Comic');
 
@@ -55,20 +44,8 @@ config = require('config');
 
 vent = require('vent');
 
-ComicCollection = Backbone.Collection.extend({
+ComicCollection = MediaCollection.extend({
   model: ComicModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -80,13 +57,10 @@ ComicCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!comics:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 
@@ -95,7 +69,9 @@ module.exports = new ComicCollection;
 });
 
 window.require.register('collections/Creators', function(require, module) {
-var CreatorCollection, CreatorModel, config, vent;
+var CreatorCollection, CreatorModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 CreatorModel = require('models/Creator');
 
@@ -103,20 +79,8 @@ config = require('config');
 
 vent = require('vent');
 
-CreatorCollection = Backbone.Collection.extend({
+CreatorCollection = MediaCollection.extend({
   model: CreatorModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -128,17 +92,45 @@ CreatorCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!creators:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 
 module.exports = new CreatorCollection;
+
+});
+
+window.require.register('collections/Media', function(require, module) {
+var MediaCollection, config, vent;
+
+config = require('config');
+
+vent = require('vent');
+
+MediaCollection = Backbone.Collection.extend({
+  page: 0,
+  itemsPerPage: config.itemsPerPage,
+  totalCount: 0,
+  query: '',
+  initialize: function() {
+    return vent.on('!search:term', this.onSearchTerm, this);
+  },
+  onSearchTerm: function(data) {
+    this.totalCount = 0;
+    this.query = data.query;
+    this.page = 0;
+    return this.fetch();
+  },
+  parse: function(response) {
+    this.totalCount = response.data.total;
+    return response.data.results;
+  }
+});
+
+module.exports = MediaCollection;
 
 });
 
@@ -229,6 +221,9 @@ Handlebars.registerHelper('buildPagination', function(collection) {
   $outEl.append($liEl);
   startIndex = Math.max(collection.page - 3, 0);
   endIndex = Math.min(startIndex + 6, Math.max(0, pagesCount - 1));
+  if (endIndex - startIndex === 0) {
+    return '';
+  }
   for (pageIndex = _i = startIndex; startIndex <= endIndex ? _i <= endIndex : _i >= endIndex; pageIndex = startIndex <= endIndex ? ++_i : --_i) {
     $liEl = buildPaginationItem(pageIndex + 1, 'page-number', pageIndex === collection.page, 'active');
     $outEl.append($liEl);
@@ -299,10 +294,9 @@ var AppRouter;
 
 AppRouter = Backbone.Router.extend({
   routes: {
-    'comics': 'listComics',
     '*actions': 'defaultRoute'
   },
-  listComics: function() {
+  defaultRoute: function(actions) {
     var characterDetailsView, charactersCollection, charactersListView, comicDetailsView, comicsCollection, comicsListView, creatorDetailsView, creatorsCollection, creatorsListView, mediaTabsView, searchAreaView;
     comicsCollection = require('collections/Comics');
     creatorsCollection = require('collections/Creators');
@@ -335,9 +329,6 @@ AppRouter = Backbone.Router.extend({
     });
     charactersListView.render();
     return charactersCollection.fetch();
-  },
-  defaultRoute: function(actions) {
-    return this.listComics();
   }
 });
 

@@ -1,4 +1,6 @@
-window.require.register("collections/Characters", function(require, module) {var CharacterCollection, CharacterModel, config, vent;
+window.require.register("collections/Characters", function(require, module) {var CharacterCollection, CharacterModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 CharacterModel = require('models/Character');
 
@@ -6,20 +8,8 @@ config = require('config');
 
 vent = require('vent');
 
-CharacterCollection = Backbone.Collection.extend({
+CharacterCollection = MediaCollection.extend({
   model: CharacterModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -31,13 +21,10 @@ CharacterCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!characters:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 

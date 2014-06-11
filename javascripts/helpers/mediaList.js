@@ -26,6 +26,9 @@ Handlebars.registerHelper('buildPagination', function(collection) {
   $outEl.append($liEl);
   startIndex = Math.max(collection.page - 3, 0);
   endIndex = Math.min(startIndex + 6, Math.max(0, pagesCount - 1));
+  if (endIndex - startIndex === 0) {
+    return '';
+  }
   for (pageIndex = _i = startIndex; startIndex <= endIndex ? _i <= endIndex : _i >= endIndex; pageIndex = startIndex <= endIndex ? ++_i : --_i) {
     $liEl = buildPaginationItem(pageIndex + 1, 'page-number', pageIndex === collection.page, 'active');
     $outEl.append($liEl);

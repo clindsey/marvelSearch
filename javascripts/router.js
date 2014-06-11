@@ -2,10 +2,9 @@ window.require.register("router", function(require, module) {var AppRouter;
 
 AppRouter = Backbone.Router.extend({
   routes: {
-    'comics': 'listComics',
     '*actions': 'defaultRoute'
   },
-  listComics: function() {
+  defaultRoute: function(actions) {
     var characterDetailsView, charactersCollection, charactersListView, comicDetailsView, comicsCollection, comicsListView, creatorDetailsView, creatorsCollection, creatorsListView, mediaTabsView, searchAreaView;
     comicsCollection = require('collections/Comics');
     creatorsCollection = require('collections/Creators');
@@ -38,9 +37,6 @@ AppRouter = Backbone.Router.extend({
     });
     charactersListView.render();
     return charactersCollection.fetch();
-  },
-  defaultRoute: function(actions) {
-    return this.listComics();
   }
 });
 

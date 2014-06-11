@@ -1,4 +1,6 @@
-var ComicCollection, ComicModel, config, vent;
+var ComicCollection, ComicModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 ComicModel = require('models/Comic');
 
@@ -6,20 +8,8 @@ config = require('config');
 
 vent = require('vent');
 
-ComicCollection = Backbone.Collection.extend({
+ComicCollection = MediaCollection.extend({
   model: ComicModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -31,13 +21,10 @@ ComicCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!comics:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 

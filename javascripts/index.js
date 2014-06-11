@@ -14274,7 +14274,9 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 
 
 window.require.register('collections/Characters', function(require, module) {
-var CharacterCollection, CharacterModel, config, vent;
+var CharacterCollection, CharacterModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 CharacterModel = require('models/Character');
 
@@ -14282,20 +14284,8 @@ config = require('config');
 
 vent = require('vent');
 
-CharacterCollection = Backbone.Collection.extend({
+CharacterCollection = MediaCollection.extend({
   model: CharacterModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -14307,13 +14297,10 @@ CharacterCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!characters:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 
@@ -14322,7 +14309,9 @@ module.exports = new CharacterCollection;
 });
 
 window.require.register('collections/Comics', function(require, module) {
-var ComicCollection, ComicModel, config, vent;
+var ComicCollection, ComicModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 ComicModel = require('models/Comic');
 
@@ -14330,20 +14319,8 @@ config = require('config');
 
 vent = require('vent');
 
-ComicCollection = Backbone.Collection.extend({
+ComicCollection = MediaCollection.extend({
   model: ComicModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -14355,13 +14332,10 @@ ComicCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!comics:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 
@@ -14370,7 +14344,9 @@ module.exports = new ComicCollection;
 });
 
 window.require.register('collections/Creators', function(require, module) {
-var CreatorCollection, CreatorModel, config, vent;
+var CreatorCollection, CreatorModel, MediaCollection, config, vent;
+
+MediaCollection = require('collections/Media');
 
 CreatorModel = require('models/Creator');
 
@@ -14378,20 +14354,8 @@ config = require('config');
 
 vent = require('vent');
 
-CreatorCollection = Backbone.Collection.extend({
+CreatorCollection = MediaCollection.extend({
   model: CreatorModel,
-  page: 0,
-  itemsPerPage: config.itemsPerPage,
-  totalCount: 0,
-  query: '',
-  initialize: function() {
-    return vent.on('!search:term', this.onSearchTerm, this);
-  },
-  onSearchTerm: function(data) {
-    this.query = data.query;
-    this.page = 0;
-    return this.fetch();
-  },
   url: function() {
     var limit, offset, urlString;
     limit = this.itemsPerPage;
@@ -14403,17 +14367,45 @@ CreatorCollection = Backbone.Collection.extend({
     return urlString;
   },
   parse: function(response) {
-    var count;
-    count = response.data.total;
-    this.totalCount = count;
     vent.trigger('!creators:searchCount', {
-      count: count
+      count: response.data.total
     });
-    return response.data.results;
+    return MediaCollection.prototype.parse.call(this, response);
   }
 });
 
 module.exports = new CreatorCollection;
+
+});
+
+window.require.register('collections/Media', function(require, module) {
+var MediaCollection, config, vent;
+
+config = require('config');
+
+vent = require('vent');
+
+MediaCollection = Backbone.Collection.extend({
+  page: 0,
+  itemsPerPage: config.itemsPerPage,
+  totalCount: 0,
+  query: '',
+  initialize: function() {
+    return vent.on('!search:term', this.onSearchTerm, this);
+  },
+  onSearchTerm: function(data) {
+    this.totalCount = 0;
+    this.query = data.query;
+    this.page = 0;
+    return this.fetch();
+  },
+  parse: function(response) {
+    this.totalCount = response.data.total;
+    return response.data.results;
+  }
+});
+
+module.exports = MediaCollection;
 
 });
 
@@ -14504,6 +14496,9 @@ Handlebars.registerHelper('buildPagination', function(collection) {
   $outEl.append($liEl);
   startIndex = Math.max(collection.page - 3, 0);
   endIndex = Math.min(startIndex + 6, Math.max(0, pagesCount - 1));
+  if (endIndex - startIndex === 0) {
+    return '';
+  }
   for (pageIndex = _i = startIndex; startIndex <= endIndex ? _i <= endIndex : _i >= endIndex; pageIndex = startIndex <= endIndex ? ++_i : --_i) {
     $liEl = buildPaginationItem(pageIndex + 1, 'page-number', pageIndex === collection.page, 'active');
     $outEl.append($liEl);
@@ -14574,10 +14569,9 @@ var AppRouter;
 
 AppRouter = Backbone.Router.extend({
   routes: {
-    'comics': 'listComics',
     '*actions': 'defaultRoute'
   },
-  listComics: function() {
+  defaultRoute: function(actions) {
     var characterDetailsView, charactersCollection, charactersListView, comicDetailsView, comicsCollection, comicsListView, creatorDetailsView, creatorsCollection, creatorsListView, mediaTabsView, searchAreaView;
     comicsCollection = require('collections/Comics');
     creatorsCollection = require('collections/Creators');
@@ -14610,9 +14604,6 @@ AppRouter = Backbone.Router.extend({
     });
     charactersListView.render();
     return charactersCollection.fetch();
-  },
-  defaultRoute: function(actions) {
-    return this.listComics();
   }
 });
 
@@ -15140,9 +15131,26 @@ function program7(depth0,data) {
 this["JST"]["app/templates/creatorDetails.hbs"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression, self=this;
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper;
+  buffer += "\n      ";
+  if (helper = helpers.fullName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.fullName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\n    ";
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  
+  return "\n      &nbsp;\n    ";
+  }
+
+function program5(depth0,data) {
   
   var buffer = "", stack1, helper;
   buffer += "\n    ";
@@ -15153,18 +15161,17 @@ function program1(depth0,data) {
   return buffer;
   }
 
-function program3(depth0,data) {
+function program7(depth0,data) {
   
   
   return "\n    Description unavailable.\n  ";
   }
 
-  buffer += "<div class=\"modal-header\">\n  <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n  <h4 class=\"modal-title\">";
-  if (helper = helpers.title) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.title); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</h4>\n</div>\n<div class=\"modal-body\">\n  ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.description), {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),data:data});
+  buffer += "<div class=\"modal-header\">\n  <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n  <h4 class=\"modal-title\">\n    ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.fullName), {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n  </h4>\n</div>\n<div class=\"modal-body\">\n  ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.description), {hash:{},inverse:self.program(7, program7, data),fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n</div>\n<div class=\"modal-footer\">\n  <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n</div>\n";
   return buffer;
