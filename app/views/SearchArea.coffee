@@ -1,4 +1,4 @@
-vent = require 'vent'
+vent = window.require 'vent'
 
 SearchAreaView = Backbone.View.extend
   el: '.search-area'

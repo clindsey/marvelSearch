@@ -110,6 +110,10 @@ module.exports = (grunt) ->
           {expand: true, cwd: 'vendor/images', src: ['**'], dest: 'public/images'}
           {expand: true, src: ['test/unit/assets/*'], dest: 'public/test/unit', flatten: true}
         ]
+      test:
+        files: [
+          {expand: true, cwd: 'public/javascripts/', src: ['**'], dest: 'public/test/unit/javascripts/'}
+        ]
 
     concat:
       javascripts:
@@ -141,6 +145,6 @@ module.exports = (grunt) ->
         tasks: ['build']
 
   grunt.registerTask 'live', ['build', 'connect:livereload', 'watch']
-  grunt.registerTask 'build', ['deploy']#, 'test:unit']
+  grunt.registerTask 'build', ['deploy', 'copy:test']#, 'test:unit']
   grunt.registerTask 'deploy', ['clean:build', 'coffee', 'handlebars', 'commonjs', 'tusk_coffee', 'less', 'cssmin', 'copy:main', 'concat']
   grunt.registerTask 'test:unit', ['blanket']#, 'mocha:unit']

@@ -1,9 +1,12 @@
 ventSpy = {
-    'trigger': sinon.spy()
+    trigger: sinon.spy()
+    on: sinon.spy()
   }
 
 window.require.register 'vent', (require, module) ->
   module.exports = ventSpy
+
+sinon.stub window, 'require'
 
 describe 'View Search Area', ->
   searchAreaView = undefined
@@ -53,3 +56,5 @@ describe 'View Search Area', ->
       expect($::blur.firstCall.thisValue[0]).to.equal $el[0]
 
       $::blur.restore()
+
+window.require.restore()
