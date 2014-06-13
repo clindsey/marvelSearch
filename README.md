@@ -1,3 +1,5 @@
+clindsey/marvelSearch - [view the demo](http://clindsey.github.io/marvelSearch/)
+
 Requirements
 ---
 * Marvel developer account key [https://developer.marvel.com/account]
