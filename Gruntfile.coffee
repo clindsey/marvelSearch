@@ -143,4 +143,4 @@ module.exports = (grunt) ->
   grunt.registerTask 'live', ['build', 'connect:livereload', 'watch']
   grunt.registerTask 'build', ['deploy']#, 'test:unit']
   grunt.registerTask 'deploy', ['clean:build', 'coffee', 'handlebars', 'commonjs', 'tusk_coffee', 'less', 'cssmin', 'copy:main', 'concat']
-  grunt.registerTask 'test:unit', ['blanket', 'mocha:unit']
+  grunt.registerTask 'test:unit', ['blanket']#, 'mocha:unit']

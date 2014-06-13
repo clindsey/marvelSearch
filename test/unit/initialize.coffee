@@ -1,5 +1,5 @@
 tests = [
-  #'test/unit/views/comicsList'
+  'test/unit/views/searchArea'
 ]
 
 for test in tests
@@ -11,4 +11,5 @@ else
   runner = mocha.run()
 
   runner.on 'end', ->
-    new MochaCov
+    if _$jscoverage?
+      new MochaCov
