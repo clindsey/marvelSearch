@@ -1,4 +1,3 @@
-CharacterModel = Backbone.Model.extend
-  initialize: ->
+CharacterModel = Backbone.Model.extend {}
 
 module.exports = CharacterModel

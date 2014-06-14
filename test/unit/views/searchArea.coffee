@@ -1,22 +1,18 @@
-ventSpy = {
-    trigger: sinon.spy()
-    on: sinon.spy()
-  }
-
-window.require.register 'vent', (require, module) ->
-  module.exports = ventSpy
-
-sinon.stub window, 'require'
+vent = require 'vent'
 
 describe 'View Search Area', ->
   searchAreaView = undefined
 
   beforeEach ->
+    sinon.stub vent, 'trigger'
+
     $('body').append '<div class="search-area">'
 
     searchAreaView = new (require 'views/SearchArea')
 
   afterEach ->
+    vent.trigger.restore()
+
     $('.search-area').remove()
 
   it 'renders a template', ->
@@ -43,7 +39,7 @@ describe 'View Search Area', ->
       el.$('input').val 'something'
       el.$('input').trigger keypressEvent
 
-      expect(ventSpy.trigger.calledWith('!search:term', {query: 'something'})).to.equal true
+      expect(vent.trigger.calledWith('!search:term', {query: 'something'})).to.equal true
 
     it 'calls blur on input on search submit', ->
       sinon.spy $.prototype, 'blur'
@@ -56,5 +52,3 @@ describe 'View Search Area', ->
       expect($::blur.firstCall.thisValue[0]).to.equal $el[0]
 
       $::blur.restore()
-
-window.require.restore()

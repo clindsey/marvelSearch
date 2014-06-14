@@ -1,4 +1,3 @@
-ComicModel = Backbone.Model.extend
-  initialize: ->
+ComicModel = Backbone.Model.extend {}
 
 module.exports = ComicModel

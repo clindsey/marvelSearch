@@ -1,6 +1,6 @@
 tests = [
+  'test/unit/views/searchArea'
   'test/unit/views/mediaTabs'
-  #'test/unit/views/searchArea'
 # 'test/unit/views/mediaList'
 # 'test/unit/views/creatorsList'
 # 'test/unit/views/creatorDetails'
@@ -15,7 +15,9 @@ tests = [
 # 'test/unit/helpers/comicsList'
 # 'test/unit/helpers/charactersList'
 # 'test/unit/helpers/characterDetails'
-# 'test/unit/config'
+  'test/unit/config'
+  'test/unit/index'
+  'test/unit/vent'
 # 'test/unit/collections/media'
 # 'test/unit/collections/creators'
 # 'test/unit/collections/comics'

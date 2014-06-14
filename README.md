@@ -11,7 +11,7 @@ Dependencies
 Local Dev
 ---
 Add your Marvel developer account key [https://developer.marvel.com/account]
-* `cp app/config.example.coffee app/config.coffee`
+* `cp app/config_example.coffee app/config.coffee`
 * edit `app/config.coffee` and add your own Marvel `apiKey`
 
 Install npm and bower packages:

@@ -1,4 +1,3 @@
-CreatorModel = Backbone.Model.extend
-  initialize: ->
+CreatorModel = Backbone.Model.extend {}
 
 module.exports = CreatorModel
