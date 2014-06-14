@@ -46,4 +46,6 @@ Stop the container:
 
 Testing
 ---
-Work in progress, will be adding actual unit tests soon. Will have coverage testings also.
+mocha tests will be available at `localhost:8080/test/unit`
+
+Work in progress, adding more unit tests.
