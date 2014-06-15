@@ -3,7 +3,7 @@
     <h3 class="text-info"><span class="loading-spinner glyphicon glyphicon-refresh"></span> Loading Search Results...</h3>
   {{else}}
     {{#buildMediaList collection}}
-      <div class="characters-list-item media-list-item" style="background-image: url({{thumbnailSrc thumbnail}});" data-character-id="{{id}}">
+      <div class="characters-list-item media-list-item" style="background-image: url({{characterThumbnailSrc thumbnail}});" data-character-id="{{id}}">
         <h4>{{name}}</h4>
       </div>
     {{/buildMediaList}}

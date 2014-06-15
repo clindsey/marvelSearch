@@ -1,2 +1,2 @@
-Handlebars.registerHelper 'thumbnailSrc', (thumbnail) ->
+Handlebars.registerHelper 'creatorThumbnailSrc', (thumbnail) ->
   "#{thumbnail.path}.#{thumbnail.extension}"
